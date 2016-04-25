@@ -17,7 +17,7 @@ class JSONField(models.TextField):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('default', '{}')
+        kwargs.setdefault('default', {})
         super(JSONField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
@@ -41,6 +41,9 @@ class JSONField(models.TextField):
                 raise ValidationError(str(err))
         else:
             return value
+
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
 
     def validate(self, value, model_instance):
         """Check value is a valid JSON string, raise ValidationError on
